@@ -43,10 +43,13 @@ gwas_sumstats <- gwas_sumstats[order(match(gwas_sumstats[, 'SNP'], locus_bim[, '
 # > is.unsorted(gwas_sumstats$BP)
 # [1] FALSE
 
-
 # overlap variants QTL and GWAS locus
 qtl_in_gwas <- qtl %>% filter(V2 %in% gwas_sumstats$SNP)
 gwas_in_qtl <- gwas_sumstats %>% filter(SNP %in% qtl$V2)
+# order QTL. Note isoQTL and sQTL from GTEx's FastQTL variants are not ordered as in BIM. Also comfirmed same BP between data_bim and locus_bim
+qtl_in_gwas <- qtl_in_gwas %>% inner_join(locus_bim, by = c("V2" ="V2")) # this is unneccessary
+qtl_in_gwas <- qtl_in_gwas[order(match(qtl_in_gwas[, 'V2'], locus_bim[, 'V2'])), ]
+
 qtl_in_gwas <- qtl_in_gwas %>%
     mutate(zscore = V8 / V9)
 # > is.unsorted(gwas_in_qtl$BP)
