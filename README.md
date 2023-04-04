@@ -1,6 +1,6 @@
 # Colocalization between ipsych cross-disorder GWAS and developing brain xQTLs
 - e/iso/sQTL, trimester-specific e/iso/sQTL
-- `Snakefile` rules, repeat for each annotation
+- `Snakefile` rules for each annotation
 ```
     - locus_egene: get a list of candidate genes for colocalization
     - write_locus_gene_list: write a list of all locus-gene pairs for parallelization
