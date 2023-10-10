@@ -6,7 +6,7 @@ library(argparser)
 
 p <- arg_parser("Get eGene in locus")
 p <- add_argument(p, "--locus", help = "")
-p <- add_argument(p, "--annot", help = "eqtl/isoqtl/sqtl/tri")
+p <- add_argument(p, "--annot", help = "eqtl/isoqtl/sqtl/tri/pec")
 
 args <- parse_args(p)
 
@@ -57,6 +57,21 @@ if (args$annot == "eqtl") {
     "/u/project/gandalm/cindywen/isoform_twas/sqtl_new/results/tri2_nominal_10hcp/significant_assoc.txt",
     data.table = F
 )
+} else if (args$annot == "pec_eqtl") {
+    egene <- fread(
+    "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/eQTL/QTLtools_nominal/DER-08a_hg19_eQTL.significant_eCAVIAR.formatted.rsID.txt",
+    data.table = F
+)
+} else if (args$annot == "pec_isoqtl") {
+    egene <- fread(
+    "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/isoQTL/QTLtools_nominal/cov.isoHCP100+gPCs20+AllMeta.formatted.significant.txt",
+    data.table = F
+)
+} else if (args$annot == "pec_test") {
+    egene <- fread(
+    "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/eQTL/QTLtools_nominal/cov.geneHCP100+gPCs20+AllMeta_sig_rsid.txt",
+    data.table = F
+)
 }
 
 
@@ -85,82 +100,57 @@ if (length(unique(egene_in_locus$pid)) > 0) {
     'locus' = args$locus, 
     'gene' = unique(egene_in_locus$pid)
     )
-
-    if (args$annot == "eqtl") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "isoqtl") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "sqtl") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "eqtl_tri1") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_tri1.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "eqtl_tri2") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_tri2.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "isoqtl_tri1") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_tri1_35hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "isoqtl_tri2") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_tri2_20hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "sqtl_tri1") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron_tri1_15hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "sqtl_tri2") {
-        write.table(egene_list, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron_tri2_10hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    }
 } else {
-    x <- data.frame()
-    if (args$annot == "eqtl") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "isoqtl") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "sqtl") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "eqtl_tri1") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_tri1.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "eqtl_tri2") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_tri2.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "isoqtl_tri1") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_tri1_35hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "isoqtl_tri2") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_tri2_20hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "sqtl_tri1") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron_tri1_15hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    } else if (args$annot == "sqtl_tri2") {
-        write.table(x, paste0(
-        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron_tri2_10hcp.txt"
-    ), col.names = F, row.names = F, quote = F, sep = "\t")
-    }
+    egene_list <- data.frame()
 }
 
+
+if (args$annot == "eqtl") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "isoqtl") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "sqtl") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "eqtl_tri1") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_tri1.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "eqtl_tri2") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_tri2.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "isoqtl_tri1") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_tri1_35hcp.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "isoqtl_tri2") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_tri2_20hcp.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "sqtl_tri1") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron_tri1_15hcp.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "sqtl_tri2") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_intron_tri2_10hcp.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "pec_eqtl") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_pec.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "pec_isoqtl") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_isoform_pec.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+} else if (args$annot == "pec_test") {
+        write.table(egene_list, paste0(
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/locus_egene_pec_test.txt"
+    ), col.names = F, row.names = F, quote = F, sep = "\t")
+}

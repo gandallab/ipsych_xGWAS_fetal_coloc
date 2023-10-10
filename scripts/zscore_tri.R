@@ -21,7 +21,8 @@ gwas <- test_table[args$locus, 'GWAS']
 
 
 # read feature cis assoc
-qtl <- fread(paste0("/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/", args$gene, "_all_pairs_", args$annot, ".txt"), data.table = F)
+# add fill = T as some rows have missing FDR column in PEC eQTL file, fread terminate
+qtl <- fread(paste0("/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/", args$gene, "_all_pairs_", args$annot, ".txt"), data.table = F, fill = T)
 
 # read locus GWAS
 gwas_sumstats <- fread(paste0("/u/project/gandalm/cindywen/ipsych_gwas/data/sumstats_filtered/iPSYCH2015_EUR_", gwas, ".assoc"), data.table = F)
@@ -84,3 +85,4 @@ write.table(as.data.frame(gwas_in_qtl$SNP), paste0(
 ),
 col.names = F, row.names = F, quote = F, sep = "\t"
 )
+

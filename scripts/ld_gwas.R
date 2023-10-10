@@ -42,7 +42,7 @@ if (bp-1e6 > 0) {
 
 
 # read list of common variants with QTL
-if (grepl("tri", args$annot, fixed = TRUE)) {
+if (grepl("(tri|pec)", args$annot)) {
     snps <- read.table(paste0(
         "/u/project/gandalm/cindywen/ipsych_gwas/out/locus", args$locus, "/", args$gene, "_snps_", args$annot, ".txt"
     ), header = F)

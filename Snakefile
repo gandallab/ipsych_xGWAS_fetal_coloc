@@ -33,8 +33,12 @@ LOCUS_ISO2_TABLE = pd.read_table("locus_isoform_list_tri2_20hcp.txt")
 LOCUS_INTRON1_TABLE = pd.read_table("locus_intron_list_tri1_15hcp.txt")
 LOCUS_INTRON2_TABLE = pd.read_table("locus_intron_list_tri2_10hcp.txt")
 
+LOCUS_PEC_GENE_TABLE = pd.read_table("locus_gene_list_pec.txt")
+LOCUS_PEC_GENE_noempty_TABLE = pd.read_table("locus_gene_list_pec_noempty.txt")
+LOCUS_PEC_ISO_TABLE = pd.read_table("locus_isoform_list_pec.txt")
+LOCUS_PEC_GENE_NEW_TABLE = pd.read_table("locus_gene_list_pec_test.txt")
 # not ideal workaround to avoid wildcards ambiguity
-ruleorder: analyze_ecaviar_intron_tri > analyze_ecaviar_isoform_tri > analyze_ecaviar_tri > ecaviar_intron_tri > ecaviar_isoform_tri > ecaviar_tri > ld_gwas_intron_tri > ld_gwas_isoform_tri > ld_gwas_tri > ld_qtl_intron_tri > ld_qtl_isoform_tri > ld_qtl_tri > zscore_intron_tri > zscore_isoform_tri > zscore_tri > extract_cis_assoc_intron_tri > extract_cis_assoc_isoform_tri > analyze_ecaviar_intron > ecaviar_intron > ld_gwas_intron > ld_qtl_intron > zscore_intron > extract_cis_assoc_intron > analyze_ecaviar_isoform > ecaviar_isoform > ld_gwas_isoform > ld_qtl_isoform > zscore_isoform > extract_cis_assoc_isoform > analyze_ecaviar > ecaviar > ld_gwas > ld_qtl > zscore > extract_cis_assoc_gene
+ruleorder: analyze_ecaviar_pec > ecaviar_pec > ld_gwas_pec > ld_qtl_pec > zscore_pec > extract_cis_assoc_gene_pec > extract_cis_assoc_isoform_pec > analyze_ecaviar_intron_tri > analyze_ecaviar_isoform_tri > analyze_ecaviar_tri > ecaviar_intron_tri > ecaviar_isoform_tri > ecaviar_tri > ld_gwas_intron_tri > ld_gwas_isoform_tri > ld_gwas_tri > ld_qtl_intron_tri > ld_qtl_isoform_tri > ld_qtl_tri > zscore_intron_tri > zscore_isoform_tri > zscore_tri > extract_cis_assoc_intron_tri > extract_cis_assoc_isoform_tri > analyze_ecaviar_intron > ecaviar_intron > ld_gwas_intron > ld_qtl_intron > zscore_intron > extract_cis_assoc_intron > analyze_ecaviar_isoform > ecaviar_isoform > ld_gwas_isoform > ld_qtl_isoform > zscore_isoform > extract_cis_assoc_isoform > analyze_ecaviar > ecaviar > ld_gwas > ld_qtl > zscore > extract_cis_assoc_gene
 
 rule all:
     input:
@@ -56,41 +60,59 @@ rule all:
         #     locus = LOCUS_INTRON_TABLE.locus.values,
         #     gene = LOCUS_INTRON_TABLE.intron.values,
         # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri1.done",
+        #     zip,
+        #     locus = LOCUS_GENE1_TABLE.locus.values,
+        #     gene = LOCUS_GENE1_TABLE.gene.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri2.done",
+        #     zip,
+        #     locus = LOCUS_GENE2_TABLE.locus.values,
+        #     gene = LOCUS_GENE2_TABLE.gene.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri1_35hcp.done",
+        #     zip,
+        #     locus = LOCUS_ISO1_TABLE.locus.values,
+        #     gene = LOCUS_ISO1_TABLE.isoform.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri2_20hcp.done",
+        #     zip,
+        #     locus = LOCUS_ISO2_TABLE.locus.values,
+        #     gene = LOCUS_ISO2_TABLE.isoform.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri1_15hcp.done",
+        #     zip,
+        #     locus = LOCUS_INTRON1_TABLE.locus.values,
+        #     gene = LOCUS_INTRON1_TABLE.intron.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri2_10hcp.done",
+        #     zip,
+        #     locus = LOCUS_INTRON2_TABLE.locus.values,
+        #     gene = LOCUS_INTRON2_TABLE.intron.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_pec.done",
+        #     zip,
+        #     locus = LOCUS_PEC_GENE_noempty_TABLE.locus.values,
+        #     gene = LOCUS_PEC_GENE_noempty_TABLE.gene.values,
+        # ),
+        # expand(
+        #     "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_pec.done",
+        #     zip,
+        #     locus = LOCUS_PEC_ISO_TABLE.locus.values,
+        #     gene = LOCUS_PEC_ISO_TABLE.isoform.values,
+        # ),
         expand(
-            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri1.done",
+            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_pec.done",
             zip,
-            locus = LOCUS_GENE1_TABLE.locus.values,
-            gene = LOCUS_GENE1_TABLE.gene.values,
-        ),
-        expand(
-            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri2.done",
-            zip,
-            locus = LOCUS_GENE2_TABLE.locus.values,
-            gene = LOCUS_GENE2_TABLE.gene.values,
-        ),
-        expand(
-            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri1_35hcp.done",
-            zip,
-            locus = LOCUS_ISO1_TABLE.locus.values,
-            gene = LOCUS_ISO1_TABLE.isoform.values,
-        ),
-        expand(
-            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri2_20hcp.done",
-            zip,
-            locus = LOCUS_ISO2_TABLE.locus.values,
-            gene = LOCUS_ISO2_TABLE.isoform.values,
-        ),
-        expand(
-            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri1_15hcp.done",
-            zip,
-            locus = LOCUS_INTRON1_TABLE.locus.values,
-            gene = LOCUS_INTRON1_TABLE.intron.values,
-        ),
-        expand(
-            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_tri2_10hcp.done",
-            zip,
-            locus = LOCUS_INTRON2_TABLE.locus.values,
-            gene = LOCUS_INTRON2_TABLE.intron.values,
+            locus = LOCUS_PEC_GENE_NEW_TABLE.locus.values,
+            gene = LOCUS_PEC_GENE_NEW_TABLE.gene.values,
         ),
 
 ############# eQTL #############
@@ -872,3 +894,205 @@ rule analyze_ecaviar_intron_tri:
             --annot tri{wildcards.tri}_{wildcards.hcp}hcp
         touch {output[0]}
         """
+
+############# PEC eQTL #############
+rule locus_egene_pec:
+    input:
+        "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/eQTL/QTLtools_nominal/DER-08a_hg19_eQTL.significant_eCAVIAR.formatted.rsID.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/locus_egene_pec.txt",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load R/4.1.0-BIO
+        Rscript scripts/locus_egene.R \
+            --locus {wildcards.locus} \
+            --annot pec_eqtl
+        """
+
+rule write_locus_gene_list_pec:
+    input:
+        expand(
+            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/locus_egene_pec.txt",
+            locus=TEST_TABLE.locus.values,
+        )
+    output:
+        "locus_gene_list_pec.txt",
+    shell:
+        """
+        cat /u/project/gandalm/cindywen/ipsych_gwas/out/locus*/locus_egene_pec.txt > locus_gene_list_pec.txt
+        sed  -i '1i locus\tgene' locus_gene_list_pec.txt
+        """
+
+rule extract_cis_assoc_gene_pec:
+    input:
+        "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/eQTL/QTLtools_nominal/PEC_eQTL_nominal_geneHCP100+gPCs20+AllMeta_assoc.rsID.txt.gz",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_all_pairs_pec.txt",
+    shell:
+        """
+        awk -v a="{wildcards.gene}" '$1 == a {{print}}' <(zcat {input[0]}) > {output[0]}
+        """
+# somehow not all eGenes are in the full cis assoc file for PEC. These genes have empty snps file. Had error with plink --extract. Remove these from the locus-gene table
+
+rule zscore_pec:
+    input:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_all_pairs_pec.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_zscore_pec.txt",
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_gwas_zscore_pec.txt",
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_snps_pec.txt",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load R/4.1.0-BIO
+        Rscript scripts/zscore_tri.R \
+            --locus {wildcards.locus} \
+            --gene {wildcards.gene} \
+            --annot pec
+        """
+
+
+rule ld_qtl_pec:
+    input:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_snps_pec.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_pec.ld",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load plink/1.90b624
+
+        plink --bfile /u/project/gandalm/shared/GenomicDatasets/PsychENCODE/Genotypes/PsychENCODE_rsid_1321/Capstone4.all_dbSNP_rsid_1321 \
+            --r \
+            --matrix \
+            --extract {input[0]} \
+            --out /u/project/gandalm/cindywen/ipsych_gwas/out/locus{wildcards.locus}/{wildcards.gene}_pec
+        """
+
+rule ld_gwas_pec:
+    input:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_snps_pec.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_gwas_pec.ld",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load R/4.1.0-BIO
+        Rscript scripts/ld_gwas.R \
+            --locus {wildcards.locus} \
+            --gene {wildcards.gene} \
+            --annot pec
+        """
+
+rule ecaviar_pec:
+    input:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_gwas_pec.ld",
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_pec.ld",
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_zscore_pec.txt",
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_gwas_zscore_pec.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_ecaviar_pec_col",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load gcc/10.2.0
+        cd /u/project/gandalm/cindywen/ipsych_gwas/out/locus{wildcards.locus}/
+
+        /u/project/gandalm/shared/apps/caviar/CAVIAR-C++/eCAVIAR \
+                -o {wildcards.gene}_ecaviar_pec \
+                -l {wildcards.gene}_gwas_pec.ld \
+                -z {wildcards.gene}_gwas_zscore_pec.txt \
+                -l {wildcards.gene}_pec.ld \
+                -z {wildcards.gene}_zscore_pec.txt \
+                -f 1 \
+                -c 2 \
+                -r 0.95
+        """
+
+rule analyze_ecaviar_pec:
+    input:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_ecaviar_pec_col",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_pec.done"
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load R/4.1.0-BIO
+
+        Rscript scripts/analyze.R \
+            --locus {wildcards.locus} \
+            --gene {wildcards.gene} \
+            --annot pec
+        touch {output[0]}
+        """
+############# PEC eQTL test: use 100HCP sig file #############
+# now use matching full assoc and sig assoc files
+# generate any missing files compared to locus_gene_list_pec_noempty.txt
+# pec_eqtl_CLPP_sig.txt now containing results from both runs
+rule locus_egene_pec_test:
+    input:
+        "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/eQTL/QTLtools_nominal/cov.geneHCP100+gPCs20+AllMeta_sig_rsid.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/locus_egene_pec_test.txt",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load R/4.1.0-BIO
+        Rscript scripts/locus_egene.R \
+            --locus {wildcards.locus} \
+            --annot pec_test
+        """
+
+rule write_locus_gene_list_pec_test:
+    input:
+        expand(
+            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/locus_egene_pec_test.txt",
+            locus=TEST_TABLE.locus.values,
+        )
+    output:
+        "locus_gene_list_pec_test.txt",
+    shell:
+        """
+        cat /u/project/gandalm/cindywen/ipsych_gwas/out/locus*/locus_egene_pec_test.txt > locus_gene_list_pec_test.txt
+        sed  -i '1i locus\tgene' locus_gene_list_pec_test.txt
+        """
+############# PEC isoQTL #############
+rule locus_isoform_pec:
+    input:
+        "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/isoQTL/QTLtools_nominal/cov.isoHCP100+gPCs20+AllMeta.formatted.significant.txt",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/locus_isoform_pec.txt",
+    shell:
+        """
+        . /u/local/Modules/default/init/modules.sh
+        module load R/4.1.0-BIO
+        Rscript scripts/locus_egene.R \
+            --locus {wildcards.locus} \
+            --annot pec_isoqtl
+        """
+
+rule write_locus_isoform_list_pec:
+    input:
+        expand(
+            "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/locus_isoform_pec.txt",
+            locus=TEST_TABLE.locus.values,
+        )
+    output:
+        "locus_isoform_list_pec.txt",
+    shell:
+        """
+        cat /u/project/gandalm/cindywen/ipsych_gwas/out/locus*/locus_isoform_pec.txt > locus_isoform_list_pec.txt
+        sed  -i '1i locus\tisoform' locus_isoform_list_pec.txt
+        """
+
+rule extract_cis_assoc_isoform_pec:
+    input:
+        "/u/project/gandalm/shared/GenomicDatasets/PsychENCODE/xQTL/isoQTL/QTLtools_nominal/cov.isoHCP100+gPCs20+AllMeta.formatted.gz",
+    output:
+        "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/{gene}_all_pairs_pec.txt",
+    shell:
+        """
+        awk -v a="{wildcards.gene}" '$1 == a {{print}}' <(zcat {input[0]}) > {output[0]}
+        """
+
