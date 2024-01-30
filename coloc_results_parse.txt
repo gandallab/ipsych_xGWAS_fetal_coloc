@@ -1,0 +1,39 @@
+cindywen@login1:~/project-gandalm/ipsych_gwas/out$ ls locus*/*tri*_eqtl.coloc.sigPP4 > tri_eqtl_PP4_sig.txt
+
+library(data.table)
+library(tidyverse)
+df <- read.table("tri_eqtl_PP4_sig.txt")
+df <- df %>% separate(V1, c("locus", "file"), sep = "/")
+# get gene name
+df <- df %>% mutate(gene = sub("\\.tri\\d+_eqtl\\.coloc\\.sigPP4", "", file))
+annot <- fread("~/project-gandalm/isoform_twas/salmon/gencode.v33lift37.annotation.gene.info.tsv",data.table=F)
+# > tx2gene <- read.table("~/project-gandalm/isoform_twas/salmon/tx2gene_gencode_v33_noGeneVersion.tsv",header=T)
+# > pheno <- fread("~/project-gandalm/isoform_twas/sqtl_new/leafviz_annot/all.introns.tested.tsv",data.table=F, header = F)
+df <- df %>% inner_join(annot, by = c("gene"="ensg")) %>% select(locus, file, gene, V11, V12)
+# get GWAS locus
+gwas <- read.table("../data/gwas_indexSNP.tsv",header=T)
+df$locus <- gsub("locus", "", df$locus)
+df$locus <- as.numeric(df$locus)
+df <- df %>% inner_join(gwas, by = c("locus"="locus")) %>% select(locus, GWAS, file, gene, V11, V12)
+# get trimester
+df$trimester <- ifelse(grepl("tri1", df$file), 1, 2)
+# get PP3, PP4
+for (i in 1:nrow(df)){
+res <- readRDS(paste0("locus", df[i,'locus'], "/", df[i,'gene'], ".tri", df[i,'trimester'], "_eqtl.coloc.res.rds"))
+df[i,'PP3'] <- res$summary[5]
+df[i,'PP4'] <- res$summary[6]}
+
+for (i in 1:nrow(df)){
+res <- readRDS(paste0("locus", df[i,'locus'], "/", df[i,'isoform'], ".tri", df[i,'trimester'], "_isoqtl.coloc.res.rds"))
+df[i,'PP3'] <- res$summary[5]
+df[i,'PP4'] <- res$summary[6]}
+
+for (i in 1:nrow(df)){
+res <- readRDS(paste0("locus", df[i,'locus'], "/", df[i,'intron'], ".tri", df[i,'trimester'], "_sqtl.coloc.res.rds"))
+df[i,'PP3'] <- res$summary[5]
+df[i,'PP4'] <- res$summary[6]}
+
+
+colnames(df)[5] <- "gene_type"
+colnames(df)[6] <- "gene_name"
+write.table(df, "tri_eqtl_PP4_sig.txt", col.names = T, row.names = F, quote = F, sep = "\t")

@@ -16,7 +16,7 @@ rule all:
     input:
         expand(
             "/u/project/gandalm/cindywen/ipsych_gwas/out/locus{locus}/coloc_{annot}.done",
-            annot=["eqtl", "isoqtl", "sqtl"],
+            annot=["eqtl", "isoqtl", "sqtl", "tri1_eqtl", "tri2_eqtl", "tri1_isoqtl", "tri2_isoqtl", "tri1_sqtl", "tri2_sqtl"],
             locus=TEST_TABLE.locus.values,
         ),
 
